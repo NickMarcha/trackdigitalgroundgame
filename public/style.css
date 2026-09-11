@@ -15,6 +15,14 @@
 }
 
 @font-face {
+  font-family: 'Pixel Operator';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/pixel-operator-hb-sc.ttf') format('truetype');
+}
+
+@font-face {
   font-family: VT323;
   font-style: normal;
   font-weight: 400;
@@ -29,7 +37,8 @@
   --node: #afbfff;
   --dim: rgba(255, 255, 255, 0.55);
   --pad: 20px;
-  --display: VT323, 'Share Tech Mono', monospace;
+  --display: 'Pixel Operator', VT323, monospace;
+  --terminal: VT323, 'Share Tech Mono', monospace;
 }
 
 @media (max-width: 539px) {
@@ -76,8 +85,8 @@ header {
 h1 {
   margin: 0;
   font-family: var(--display);
-  font-size: 36px;
-  font-weight: 400;
+  font-size: 30px;
+  font-weight: 700;
   text-transform: uppercase;
   line-height: 1;
 }
@@ -129,16 +138,17 @@ body.error .error-note {
 .summary strong {
   display: block;
   font-family: var(--display);
-  font-size: 60px;
-  font-weight: 400;
+  font-size: 48px;
+  font-weight: 700;
   color: var(--yellow);
-  line-height: 0.85;
+  line-height: 1;
 }
 
 .summary .label {
-  margin: 6px 0 0;
-  font-size: 13px;
-  font-weight: 700;
+  margin: 4px 0 0;
+  font-family: var(--terminal);
+  font-size: 20px;
+  line-height: 1;
   text-transform: uppercase;
   color: var(--pale);
 }
@@ -157,7 +167,7 @@ body.error .error-note {
 
 .summary .next {
   margin: 6px 0 0;
-  font-family: var(--display);
+  font-family: var(--terminal);
   font-size: 22px;
   line-height: 1;
 }
@@ -171,7 +181,8 @@ body.error .error-note {
 
 button {
   font-family: var(--display);
-  font-size: 22px;
+  font-size: 18px;
+  font-weight: 700;
   line-height: 1;
   text-transform: uppercase;
   padding: 8px 14px;
@@ -261,8 +272,8 @@ button.secondary {
 .rail strong {
   display: block;
   font-family: var(--display);
-  font-size: 28px;
-  font-weight: 400;
+  font-size: 22px;
+  font-weight: 700;
   line-height: 1;
 }
 
