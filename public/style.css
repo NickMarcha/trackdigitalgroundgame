@@ -211,6 +211,12 @@ button.secondary {
     padding-bottom: 6px;
   }
 
+  /* No room for the top goal on phones; the expanded view has it. */
+  .rail li.top,
+  .rail li.between {
+    display: none;
+  }
+
   .bar {
     margin-top: 8px;
   }
@@ -290,8 +296,14 @@ button.secondary {
   );
 }
 
+/* Small hollow node for the hidden-goals row, centered on the line. */
 .rail li.between::after {
-  display: none;
+  width: 10px;
+  height: 10px;
+  left: -28px;
+  top: 3px;
+  background: var(--bg);
+  border: 3px solid var(--node);
 }
 
 .rail li::after {

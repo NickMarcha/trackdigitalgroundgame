@@ -67,7 +67,9 @@ function renderRail(rsp: GoalsRsp, compact: boolean): void {
   const shownLocked = compact ? locked.slice(0, 1) : locked
   const top = locked.at(-1)
   if (compact && top && top !== shownLocked[0]) {
-    items.push(goalItem(top, 'locked', 0))
+    const li = goalItem(top, 'locked', 0)
+    li.classList.add('top')
+    items.push(li)
     const between = locked.length - 2
     if (between > 0) items.push(betweenItem(between))
   }
