@@ -1,28 +1,16 @@
-## Devvit Bare Template
+# Digital Ground Game fundraiser tracker
 
-A practical [Devvit](https://developers.reddit.com/) app template with few dependencies. A little simpler at the expense of a little code.
+Shows live progress for the [Digital Ground Game election fundraiser](https://secure.actblue.com/donate/midterms-finish) inside a Reddit post: total raised, the next stretch goals, and the ones already unlocked.
 
-## Getting Started
+## Fetch Domains
 
-> Make sure you have Node 22 downloaded on your machine before running!
+The following domains are requested for this app:
 
-1. Run `npm create devvit@latest --template=bare`
-2. Go through the installation wizard. You will need to create a Reddit account and connect it to Reddit Developers.
+- `secure.actblue.com` - Reads the public goal tracker JSON for the fundraiser page (`/pages/midterms-finish/goal_tracker_data`) to show total raised and stretch goal progress. Read only, no user data is sent.
 
 ## Commands
 
-- `npm run playtest [r/sub]`: watches changes, builds, uploads, and installs on Reddit. Accepts an optional subreddit.
-- `npm run build`: builds client and server, including esbuild metafiles.
-- `npm run clean`: removes build outputs.
-- `npm run test`: runs all tests.
-- `npm run format`: fixes lints and formatting.
-- `npm run lint`: checks lints and formatting.
-- `npm run publish`: cleans, builds, uploads, and files a new app review request.
-
-## Features
-
-- A plain Node.js server with front and backend typing.
-- Tests using the builtin Node.js test runner.
-- Promise misuse linter.
-- Formatter and bundler.
-- TypeScript project skeleton split by environment (frontend, backend, test, etc).
+- `npm run dev`: watches changes, builds, uploads, and installs on your test subreddit.
+- `npm run build`: builds client and server.
+- `npm run test`: type check, lint, unit tests, build.
+- `npm run publish`: cleans, builds, uploads, and files an app review request.

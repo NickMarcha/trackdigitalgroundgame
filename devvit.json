@@ -6,8 +6,8 @@
       "default": {
         "entry": "splash.html"
       },
-      "game": {
-        "entry": "game.html"
+      "goals": {
+        "entry": "goals.html"
       }
     }
   },
@@ -15,9 +15,10 @@
   "menu": {
     "items": [
       {
-        "label": "[trackdgroundgame] New Post",
-        "description": "Create a new trackdgroundgame post.",
+        "label": "Create fundraiser tracker post",
+        "description": "Post the live Digital Ground Game fundraiser tracker.",
         "location": "subreddit",
+        "forUserType": "moderator",
         "endpoint": "/internal/on/menu/new-post"
       }
     ]
@@ -27,5 +28,11 @@
   },
   "scripts": {
     "dev": "npm run watch"
+  },
+  "permissions": {
+    "http": {
+      "enable": true,
+      "domains": ["secure.actblue.com"]
+    }
   }
 }

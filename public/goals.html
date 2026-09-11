@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Election Fundraiser</title>
+    <title>Election Fundraiser goals</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="modulepreload" href="splash.js">
+    <link rel="modulepreload" href="goals.js">
   </head>
-  <body class="compact">
+  <body>
     <main>
       <header>
         <h1>Election <em>Fundraiser</em></h1>
@@ -18,10 +18,10 @@
       <p class="next" id="next"></p>
       <p class="error-note">Could not load the total. Try again in a minute.</p>
       <div class="actions">
-        <button type="button" data-donate>Donate</button>
-        <button type="button" class="secondary" id="expand">All goals</button>
+        <button type="button" data-donate>Donate on ActBlue</button>
       </div>
+      <ol class="rail" id="rail"></ol>
     </main>
-    <script src="splash.js" type="module"></script>
+    <script src="goals.js" type="module"></script>
   </body>
 </html>
