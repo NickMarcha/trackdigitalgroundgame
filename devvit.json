@@ -6,7 +6,7 @@
       "default": {
         "entry": "splash.html",
         "styles": {
-          "height": "tall",
+          "height": 460,
           "backgroundColor": "#1144FFFF",
           "backgroundColorDark": "#1144FFFF"
         }

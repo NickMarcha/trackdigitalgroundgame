@@ -78,7 +78,7 @@ header {
 }
 
 .logo {
-  height: 52px;
+  height: 62px;
   width: auto;
 }
 
@@ -104,35 +104,6 @@ h1 em {
 
 body.error .error-note {
   display: block;
-}
-
-/* Summary above the rail on phones, beside it when there is room. */
-.layout {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: var(--pad);
-}
-
-.summary {
-  order: -1;
-}
-
-@media (min-width: 540px) {
-  .layout {
-    grid-template-columns: 1fr 230px;
-    grid-template-rows: 1fr;
-    align-items: start;
-  }
-
-  .rail {
-    align-self: stretch;
-  }
-
-  .summary {
-    order: 0;
-    position: sticky;
-    top: var(--pad);
-  }
 }
 
 .summary strong {
@@ -198,6 +169,71 @@ button.secondary {
   color: #fff;
 }
 
+/* Summary above the rail on phones, beside it when there is room. */
+.layout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--pad);
+}
+
+.summary {
+  order: -1;
+}
+
+/* Phones: keep everything short so the compact view fits the frame. */
+@media (max-width: 539px) {
+  main {
+    gap: 12px;
+  }
+
+  .logo {
+    height: 52px;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+
+  .summary strong,
+  .summary .label {
+    display: inline;
+  }
+
+  .summary .label {
+    margin-left: 8px;
+  }
+
+  .summary .actions {
+    margin-top: 6px;
+  }
+
+  .rail li {
+    padding-bottom: 6px;
+  }
+
+  .bar {
+    margin-top: 8px;
+  }
+}
+
+@media (min-width: 540px) {
+  .layout {
+    grid-template-columns: 1fr 230px;
+    grid-template-rows: 1fr;
+    align-items: start;
+  }
+
+  .rail {
+    align-self: stretch;
+  }
+
+  .summary {
+    order: 0;
+    position: sticky;
+    top: var(--pad);
+  }
+}
+
 /*
  * Vertical goal rail, highest amount at the top like the poster. Items grow to
  * spread the nodes over the available height.
@@ -228,7 +264,7 @@ button.secondary {
 .rail li:not(:last-child)::before {
   content: '';
   position: absolute;
-  left: -26px;
+  left: -23px;
   top: 14px;
   bottom: -14px;
   width: 6px;
@@ -240,12 +276,22 @@ button.secondary {
 }
 
 /* Goals hidden between the top goal and the next goal. */
-.rail li.skip::before {
+.rail li.between,
+.rail li:has(+ .between) {
+  --fill: 0%;
+}
+
+.rail li.between::before,
+.rail li:has(+ .between)::before {
   background: repeating-linear-gradient(
     to bottom,
     var(--node) 0 6px,
     transparent 6px 12px
   );
+}
+
+.rail li.between::after {
+  display: none;
 }
 
 .rail li::after {
@@ -290,4 +336,11 @@ button.secondary {
   color: var(--yellow);
   text-decoration: line-through;
   text-decoration-thickness: 2px;
+}
+
+.rail li.between p {
+  font-family: var(--terminal);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--pale);
 }

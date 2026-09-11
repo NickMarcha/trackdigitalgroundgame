@@ -67,9 +67,9 @@ function renderRail(rsp: GoalsRsp, compact: boolean): void {
   const shownLocked = compact ? locked.slice(0, 1) : locked
   const top = locked.at(-1)
   if (compact && top && top !== shownLocked[0]) {
-    const li = goalItem(top, 'locked', 0)
-    li.classList.add('skip')
-    items.push(li)
+    items.push(goalItem(top, 'locked', 0))
+    const between = locked.length - 2
+    if (between > 0) items.push(betweenItem(between))
   }
   for (const g of [...shownLocked].reverse()) {
     const isNext = g === locked[0]
@@ -83,6 +83,16 @@ function renderRail(rsp: GoalsRsp, compact: boolean): void {
 
   const rail = document.getElementById('rail') as HTMLOListElement
   rail.replaceChildren(...items)
+}
+
+/** Placeholder for goals hidden between the top goal and the next one. */
+function betweenItem(count: number): HTMLLIElement {
+  const li = document.createElement('li')
+  li.className = 'between'
+  const p = document.createElement('p')
+  p.textContent = `${count} more goal${count === 1 ? '' : 's'}`
+  li.append(p)
+  return li
 }
 
 function goalItem(
