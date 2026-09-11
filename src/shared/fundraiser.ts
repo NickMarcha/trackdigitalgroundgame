@@ -1,6 +1,7 @@
 /** ActBlue page slug. */
 export const page = 'midterms-finish'
 export const donateUrl = `https://secure.actblue.com/donate/${page}`
+export const trackerUrl = `https://secure.actblue.com/pages/${page}/goal_tracker_data`
 export const title = 'Election Fundraiser'
 export const org = 'Digital Ground Game'
 

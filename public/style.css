@@ -1,3 +1,19 @@
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('fonts/roboto-condensed-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('fonts/roboto-condensed-italic.woff2') format('woff2');
+}
+
 :root {
   --bg: #1144ff;
   --yellow: #ffc800;
@@ -15,44 +31,36 @@ body {
   min-height: 100dvh;
   background: var(--bg);
   color: #fff;
-  font-family:
-    'Arial Narrow', 'Roboto Condensed', 'Helvetica Neue', Helvetica, Arial,
-    sans-serif;
+  font-family: 'Roboto Condensed', 'Arial Narrow', sans-serif;
   font-size: 16px;
   line-height: 1.25;
   -webkit-font-smoothing: antialiased;
 }
 
 main {
-  padding: 20px;
+  padding: 16px 20px;
   max-width: 560px;
   margin: 0 auto;
 }
 
-/* Inline feed view: fill the iframe and center the summary. */
-body.compact {
-  display: grid;
-  place-items: center;
-}
-
-body.compact main {
-  width: 100%;
-}
-
 header {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
 }
 
 h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
-  letter-spacing: -0.01em;
+  line-height: 1;
 }
 
 h1 em {
@@ -60,55 +68,20 @@ h1 em {
   color: var(--yellow);
 }
 
-.org {
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
+.error-note {
+  display: none;
+  margin: 12px 0 0;
   color: var(--pale);
-  white-space: nowrap;
 }
 
-.raised {
-  margin: 16px 0 8px;
-  font-size: 44px;
-  font-weight: 900;
-  color: var(--yellow);
-  line-height: 1;
-}
-
-.raised small {
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-  text-transform: uppercase;
-  margin-left: 6px;
-}
-
-.bar {
-  height: 12px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-#fill {
-  height: 100%;
-  width: 0;
-  background: var(--yellow);
-  border-radius: 6px;
-  transition: width 400ms ease;
-}
-
-.next {
-  margin: 8px 0 0;
-  font-size: 17px;
-  font-weight: 700;
+body.error .error-note {
+  display: block;
 }
 
 .actions {
   display: flex;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 4px;
 }
 
 button {
@@ -130,32 +103,16 @@ button.secondary {
   color: #fff;
 }
 
-body.error #raised::after {
-  content: 'Unavailable';
-  font-size: 22px;
-  color: #fff;
-}
-
-.error-note {
-  display: none;
-  margin: 8px 0 0;
-  color: var(--pale);
-}
-
-body.error .error-note {
-  display: block;
-}
-
 /* Vertical goal rail, highest amount at the top like the poster. */
 .rail {
   list-style: none;
-  margin: 24px 0 0;
+  margin: 16px 0 0;
   padding: 0 0 0 36px;
 }
 
 .rail li {
   position: relative;
-  padding: 0 0 20px;
+  padding: 0 0 16px;
 }
 
 /* Rail segment from this node down to the next one. */
@@ -188,12 +145,8 @@ body.error .error-note {
 }
 
 .rail p {
-  margin: 2px 0 0;
+  margin: 1px 0 0;
   font-size: 16px;
-}
-
-.rail .locked strong {
-  color: #fff;
 }
 
 .rail .unlocked {
@@ -210,17 +163,23 @@ body.error .error-note {
   text-decoration-thickness: 2px;
 }
 
+.rail .marker {
+  padding-top: 4px;
+  padding-bottom: 20px;
+}
+
 .rail .marker::before {
   background: var(--yellow);
   width: 28px;
   height: 28px;
   left: -37px;
-  top: 0;
+  top: 4px;
 }
 
 .rail .marker strong {
-  font-size: 28px;
+  font-size: 36px;
   color: var(--yellow);
+  line-height: 1;
 }
 
 .rail .marker p {
@@ -228,4 +187,27 @@ body.error .error-note {
   text-transform: uppercase;
   font-weight: 700;
   font-size: 13px;
+}
+
+.bar {
+  height: 10px;
+  margin: 8px 0 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: var(--yellow);
+  border-radius: 5px;
+  transition: width 400ms ease;
+}
+
+.rail .marker .next {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: none;
 }

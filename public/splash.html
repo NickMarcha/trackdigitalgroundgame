@@ -7,16 +7,14 @@
     <link rel="stylesheet" href="style.css">
     <link rel="modulepreload" href="splash.js">
   </head>
-  <body class="compact">
+  <body>
     <main>
       <header>
+        <img src="logo.svg" alt="Digital Ground Game" class="logo">
         <h1>Election <em>Fundraiser</em></h1>
-        <span class="org">Digital Ground Game</span>
       </header>
-      <p class="raised"><output id="raised"></output><small>raised</small></p>
-      <div class="bar"><div id="fill"></div></div>
-      <p class="next" id="next"></p>
       <p class="error-note">Could not load the total. Try again in a minute.</p>
+      <ol class="rail" id="rail"></ol>
       <div class="actions">
         <button type="button" data-donate>Donate</button>
         <button type="button" class="secondary" id="expand">All goals</button>
