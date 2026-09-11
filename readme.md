@@ -9,6 +9,53 @@ Two views:
 
 Both poll `/api/goals` every 60 seconds.
 
+## For moderators: getting it into your subreddit
+
+Reddit apps can only be installed by a moderator of the subreddit, and an unpublished app can only be installed by the account that owns it. So there are two ways to get this live.
+
+### Fastest: add the app owner as a moderator
+
+1. Add the app owner (u/Niconame) as a moderator of your subreddit. Full permissions are simplest; "Manage Settings" is the one that matters.
+2. They run `npx devvit install r/<your-subreddit>` from this repo. Installing creates a tracker post automatically.
+3. You can remove them as a moderator afterwards. The app and its post stay.
+
+Every mod then gets a "Create fundraiser tracker post" entry in the subreddit menu to make more posts.
+
+### Run it under your own account
+
+Do this if you would rather not add an outside moderator. It takes longer because Reddit has to approve the ActBlue fetch for your copy of the app (1-2 business days).
+
+1. Go to https://developers.reddit.com and sign in with the Reddit account that moderates your subreddit. Accept the developer terms.
+2. Install Node.js 22 or newer from https://nodejs.org.
+3. Clone this repo, then in the folder:
+   ```
+   npm install
+   npx devvit login
+   ```
+4. Open `devvit.json` and change `"name"` to a new app name (lowercase, letters and dashes, must be unique on Reddit).
+5. Run `npm run dev`. The first run creates the app under your account, creates a private test subreddit, and files the request for the `secure.actblue.com` fetch domain. Check its status at `https://developers.reddit.com/apps/<your-app-name>/developer-settings`.
+6. Until the domain is approved the post shows "Could not load the total". To fill it in the meantime, run `node sync.mjs` whenever you want the number refreshed, or set up the scheduled task below.
+7. Once you are happy, stop `npm run dev` and install it for real:
+   ```
+   npm run build
+   npx devvit upload
+   npx devvit install r/<your-subreddit>
+   ```
+
+### Keeping the total fresh while the fetch is not approved
+
+`node sync.mjs` copies the current ActBlue numbers into the app. On Windows this runs it every 5 minutes (edit the path to where you cloned the repo):
+
+```
+schtasks /create /tn "trackdgroundgame sync" /sc minute /mo 5 /tr "cmd /c cd /d C:\path	o	rackdigitalgroundgame && node sync.mjs >> sync.log 2>&1"
+```
+
+Remove it with `schtasks /delete /tn "trackdgroundgame sync" /f`. On Mac or Linux use cron: `*/5 * * * * cd /path/to/trackdigitalgroundgame && node sync.mjs >> sync.log 2>&1`. Once the domain is approved the app fetches ActBlue itself and this is no longer needed.
+
+### Changing the goal text
+
+The reward for each goal is in `src/shared/fundraiser.ts`, keyed by the goal amount in dollars. Edit it, then upload and install again (step 7 above), or if `npm run dev` is running it updates the test subreddit on save.
+
 ## How data flows
 
 ```
