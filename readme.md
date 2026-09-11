@@ -47,7 +47,7 @@ Do this if you would rather not add an outside moderator. It takes longer becaus
 `node sync.mjs` copies the current ActBlue numbers into the app. On Windows this runs it every 5 minutes (edit the path to where you cloned the repo):
 
 ```
-schtasks /create /tn "trackdgroundgame sync" /sc minute /mo 5 /tr "cmd /c cd /d C:\path	o	rackdigitalgroundgame && node sync.mjs >> sync.log 2>&1"
+schtasks /create /tn "trackdgroundgame sync" /sc minute /mo 5 /tr "cmd /c cd /d C:\path\to\trackdigitalgroundgame && node sync.mjs >> sync.log 2>&1"
 ```
 
 Remove it with `schtasks /delete /tn "trackdgroundgame sync" /f`. On Mac or Linux use cron: `*/5 * * * * cd /path/to/trackdigitalgroundgame && node sync.mjs >> sync.log 2>&1`. Once the domain is approved the app fetches ActBlue itself and this is no longer needed.
