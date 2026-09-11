@@ -11,19 +11,9 @@ Both poll `/api/goals` every 60 seconds.
 
 ## For moderators: getting it into your subreddit
 
-Reddit apps can only be installed by a moderator of the subreddit, and an unpublished app can only be installed by the account that owns it. So there are two ways to get this live.
-
-### Fastest: add the app owner as a moderator
-
-1. Add the app owner (u/Niconame) as a moderator of your subreddit. Full permissions are simplest; "Manage Settings" is the one that matters.
-2. They run `npx devvit install r/<your-subreddit>` from this repo. Installing creates a tracker post automatically.
-3. You can remove them as a moderator afterwards. The app and its post stay.
-
-Every mod then gets a "Create fundraiser tracker post" entry in the subreddit menu to make more posts.
+Reddit apps are installed by a moderator of the subreddit, from the moderator's own developer account. Running it under your own account keeps everything in your hands; there is no need to give anyone outside your mod team access.
 
 ### Run it under your own account
-
-Do this if you would rather not add an outside moderator. It takes longer because Reddit has to approve the ActBlue fetch for your copy of the app (1-2 business days).
 
 1. Go to https://developers.reddit.com and sign in with the Reddit account that moderates your subreddit. Accept the developer terms.
 2. Install Node.js 22 or newer from https://nodejs.org.
@@ -33,14 +23,22 @@ Do this if you would rather not add an outside moderator. It takes longer becaus
    npx devvit login
    ```
 4. Open `devvit.json` and change `"name"` to a new app name (lowercase, letters and dashes, must be unique on Reddit).
-5. Run `npm run dev`. The first run creates the app under your account, creates a private test subreddit, and files the request for the `secure.actblue.com` fetch domain. Check its status at `https://developers.reddit.com/apps/<your-app-name>/developer-settings`.
+5. Run `npm run dev`. The first run creates the app under your account, creates a private test subreddit, and files the request for the `secure.actblue.com` fetch domain with Reddit. Check its status at `https://developers.reddit.com/apps/<your-app-name>/developer-settings`. Approval has taken under a day for this app, but Reddit quotes 1-2 business days.
 6. Until the domain is approved the post shows "Could not load the total". To fill it in the meantime, run `node sync.mjs` whenever you want the number refreshed, or set up the scheduled task below.
-7. Once you are happy, stop `npm run dev` and install it for real:
+7. When you are happy with it, stop `npm run dev` and install it for real:
    ```
    npm run build
    npx devvit upload
    npx devvit install r/<your-subreddit>
    ```
+
+Installing creates a tracker post automatically. Every mod also gets a "Create fundraiser tracker post" entry in the subreddit menu to make more.
+
+Like every Reddit app, the installed app gets an app account on your subreddit; Reddit currently grants those full mod permissions. This app only uses it to submit the tracker post. The code is all in this repo if you want to check.
+
+### Or have the app owner install the existing app
+
+If you would rather not set up a developer account, the owner of the already-approved app can install it, but only if they moderate your subreddit. Add them with just the **Manage Settings** permission (that is the one that covers installing apps), they run `npx devvit install r/<your-subreddit>`, and you remove them as a moderator afterwards. The app and its post stay installed.
 
 ### Keeping the total fresh while the fetch is not approved
 
