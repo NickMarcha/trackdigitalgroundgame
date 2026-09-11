@@ -48,9 +48,11 @@ Like every Reddit app, the installed app gets an app account on your subreddit; 
 
 The first `npm run dev` also files a request with Reddit to let the app fetch ActBlue itself. If that gets approved (check `https://developers.reddit.com/apps/<your-app-name>/developer-settings`), the app switches over on its own and the scheduled task can be removed.
 
-### Or have the app owner install the existing app
+### Or I install the existing app for you
 
-If you would rather not set up a developer account, the owner of the existing app can install it, but only if they moderate your subreddit. Add them with just the **Manage Settings** permission (that is the one that covers installing apps), they run `npx devvit install r/<your-subreddit>`, and you remove them as a moderator afterwards. The app and its post stay installed. The sync script then runs on their machine instead of yours.
+If you would rather not set up a developer account, I can install my already-built copy. Unfortunately Reddit only lets a moderator of the subreddit install an app, so I would need to be added as a mod with the **Manage Settings** permission (the one that covers installing apps). I run `npx devvit install r/<your-subreddit>`, and you can remove me right after; the app and its post stay installed. The sync script runs on my machine and does not need mod access, so the numbers keep flowing after I am removed. Only installing a newer version later would need the permission again.
+
+I understand if adding an outside mod is not something you want to do. I am happy to walk someone on your team through the steps above instead.
 
 ### Changing the goal text
 
