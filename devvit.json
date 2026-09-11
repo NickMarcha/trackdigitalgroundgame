@@ -34,5 +34,8 @@
       "enable": true,
       "domains": ["secure.actblue.com"]
     }
+  },
+  "dev": {
+    "subreddit": "trackdgroundgame_dev"
   }
 }
