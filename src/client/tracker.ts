@@ -38,14 +38,13 @@ export function progress(rsp: GoalsRsp): number {
   return (rsp.raised - from) / (next.amount - from)
 }
 
-/** Fills the summary panel and the rail. Pass Infinity to show every goal. */
-export function render(
-  rsp: GoalsRsp,
-  lockedShown: number,
-  unlockedShown: number,
-): void {
+/**
+ * Fills the summary panel and the rail. Compact shows the top goal, the next
+ * goal, and the last three unlocked; otherwise every goal is shown.
+ */
+export function render(rsp: GoalsRsp, compact: boolean): void {
   renderSummary(rsp)
-  renderRail(rsp, lockedShown, unlockedShown)
+  renderRail(rsp, compact)
 }
 
 function renderSummary(rsp: GoalsRsp): void {
@@ -56,37 +55,44 @@ function renderSummary(rsp: GoalsRsp): void {
   fill.style.width = `${Math.min(100, progress(rsp) * 100)}%`
   const goal = split(rsp).locked[0]
   next.textContent = goal
-    ? `${short(goal.amount - rsp.raised)} to go`
+    ? `${short(goal.amount - rsp.raised)} to next goal`
     : 'Every goal unlocked'
 }
 
-/**
- * Fills #rail with the next `lockedShown` goals, a marker for the current
- * total, and the last `unlockedShown` goals, highest amount first.
- */
-function renderRail(
-  rsp: GoalsRsp,
-  lockedShown: number,
-  unlockedShown: number,
-): void {
+/** Highest amount first. The segment below each node shows progress. */
+function renderRail(rsp: GoalsRsp, compact: boolean): void {
   const {unlocked, locked} = split(rsp)
+  const items: HTMLLIElement[] = []
+
+  const shownLocked = compact ? locked.slice(0, 1) : locked
+  const top = locked.at(-1)
+  if (compact && top && top !== shownLocked[0]) {
+    const li = goalItem(top, 'locked', 0)
+    li.classList.add('skip')
+    items.push(li)
+  }
+  for (const g of [...shownLocked].reverse()) {
+    const isNext = g === locked[0]
+    const li = goalItem(g, 'locked', isNext ? progress(rsp) : 0)
+    if (isNext) li.classList.add('next')
+    items.push(li)
+  }
+  const shownUnlocked = compact ? unlocked.slice(-3) : unlocked
+  for (const g of [...shownUnlocked].reverse())
+    items.push(goalItem(g, 'unlocked', 1))
+
   const rail = document.getElementById('rail') as HTMLOListElement
-  rail.replaceChildren(
-    ...locked
-      .slice(0, lockedShown)
-      .reverse()
-      .map(g => goalItem(g, 'locked')),
-    marker(rsp.raised),
-    ...unlocked
-      .slice(-unlockedShown)
-      .reverse()
-      .map(g => goalItem(g, 'unlocked')),
-  )
+  rail.replaceChildren(...items)
 }
 
-function goalItem(goal: Goal, state: 'locked' | 'unlocked'): HTMLLIElement {
+function goalItem(
+  goal: Goal,
+  state: 'locked' | 'unlocked',
+  fill: number,
+): HTMLLIElement {
   const li = document.createElement('li')
   li.className = state
+  li.style.setProperty('--fill', `${Math.min(100, fill * 100)}%`)
   const amount = document.createElement('strong')
   amount.textContent = short(goal.amount)
   li.append(amount)
@@ -95,17 +101,6 @@ function goalItem(goal: Goal, state: 'locked' | 'unlocked'): HTMLLIElement {
     p.textContent = reward
     li.append(p)
   }
-  return li
-}
-
-function marker(raised: number): HTMLLIElement {
-  const li = document.createElement('li')
-  li.className = 'marker'
-  const amount = document.createElement('strong')
-  amount.textContent = short(raised)
-  const p = document.createElement('p')
-  p.textContent = 'raised so far'
-  li.append(amount, p)
   return li
 }
 

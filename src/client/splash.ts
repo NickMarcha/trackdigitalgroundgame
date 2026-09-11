@@ -5,4 +5,4 @@ const expandBtn = document.getElementById('expand') as HTMLButtonElement
 expandBtn.addEventListener('click', ev => requestExpandedMode(ev, 'goals'))
 
 bindDonate()
-poll(rsp => render(rsp, 2, 3))
+poll(rsp => render(rsp, true))

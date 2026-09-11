@@ -14,6 +14,14 @@
   src: url('fonts/roboto-condensed-italic.woff2') format('woff2');
 }
 
+@font-face {
+  font-family: VT323;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/vt323.woff2') format('woff2');
+}
+
 :root {
   --bg: #1144ff;
   --yellow: #ffc800;
@@ -21,6 +29,13 @@
   --node: #afbfff;
   --dim: rgba(255, 255, 255, 0.55);
   --pad: 20px;
+  --display: VT323, 'Share Tech Mono', monospace;
+}
+
+@media (max-width: 539px) {
+  :root {
+    --pad: 16px;
+  }
 }
 
 * {
@@ -43,7 +58,7 @@ main {
   max-width: 800px;
   margin: 0 auto;
   display: grid;
-  align-content: center;
+  grid-template-rows: auto 1fr;
   gap: var(--pad);
 }
 
@@ -60,15 +75,15 @@ header {
 
 h1 {
   margin: 0;
-  font-size: 28px;
-  font-weight: 900;
-  font-style: italic;
+  font-family: var(--display);
+  font-size: 36px;
+  font-weight: 400;
   text-transform: uppercase;
   line-height: 1;
 }
 
 h1 em {
-  font-style: inherit;
+  font-style: normal;
   color: var(--yellow);
 }
 
@@ -85,6 +100,7 @@ body.error .error-note {
 /* Summary above the rail on phones, beside it when there is room. */
 .layout {
   display: grid;
+  grid-template-rows: auto 1fr;
   gap: var(--pad);
 }
 
@@ -95,7 +111,12 @@ body.error .error-note {
 @media (min-width: 540px) {
   .layout {
     grid-template-columns: 1fr 230px;
+    grid-template-rows: 1fr;
     align-items: start;
+  }
+
+  .rail {
+    align-self: stretch;
   }
 
   .summary {
@@ -107,14 +128,15 @@ body.error .error-note {
 
 .summary strong {
   display: block;
-  font-size: 44px;
-  font-weight: 900;
+  font-family: var(--display);
+  font-size: 60px;
+  font-weight: 400;
   color: var(--yellow);
-  line-height: 1;
+  line-height: 0.85;
 }
 
 .summary .label {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
@@ -122,24 +144,22 @@ body.error .error-note {
 }
 
 .bar {
-  height: 10px;
+  height: 12px;
   margin: 12px 0 0;
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-  overflow: hidden;
 }
 
 .fill {
   height: 100%;
   background: var(--yellow);
-  border-radius: 5px;
   transition: width 400ms ease;
 }
 
 .summary .next {
   margin: 6px 0 0;
-  font-size: 15px;
-  font-weight: 700;
+  font-family: var(--display);
+  font-size: 22px;
+  line-height: 1;
 }
 
 .actions {
@@ -150,12 +170,11 @@ body.error .error-note {
 }
 
 button {
-  font: inherit;
-  font-size: 15px;
-  font-weight: 700;
+  font-family: var(--display);
+  font-size: 22px;
+  line-height: 1;
   text-transform: uppercase;
-  padding: 10px 16px;
-  border-radius: 6px;
+  padding: 8px 14px;
   border: 2px solid var(--yellow);
   background: var(--yellow);
   color: #001a80;
@@ -168,23 +187,33 @@ button.secondary {
   color: #fff;
 }
 
-/* Vertical goal rail, highest amount at the top like the poster. */
+/*
+ * Vertical goal rail, highest amount at the top like the poster. Items grow to
+ * spread the nodes over the available height.
+ */
 .rail {
   list-style: none;
   margin: 0;
   padding: 0 0 0 36px;
+  display: flex;
+  flex-direction: column;
 }
 
 .rail li {
   position: relative;
-  padding: 0 0 16px;
+  flex: 1;
+  padding: 0 0 18px;
 }
 
 .rail li:last-child {
+  flex: 0;
   padding-bottom: 0;
 }
 
-/* Rail segment from this node down to the next one, behind the nodes. */
+/*
+ * Segment from this node down to the next one, filled from the bottom by
+ * --fill: 100% below unlocked goals, progress below the next goal, 0 above.
+ */
 .rail li:not(:last-child)::before {
   content: '';
   position: absolute;
@@ -192,7 +221,20 @@ button.secondary {
   top: 14px;
   bottom: -14px;
   width: 6px;
-  background: var(--node);
+  background: linear-gradient(
+    to top,
+    var(--yellow) var(--fill),
+    var(--node) var(--fill)
+  );
+}
+
+/* Goals hidden between the top goal and the next goal. */
+.rail li.skip::before {
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--node) 0 6px,
+    transparent 6px 12px
+  );
 }
 
 .rail li::after {
@@ -207,14 +249,25 @@ button.secondary {
   border: 3px solid var(--bg);
 }
 
+.rail li.next::after {
+  background: var(--bg);
+  border-color: var(--yellow);
+}
+
+.rail li.unlocked::after {
+  background: var(--yellow);
+}
+
 .rail strong {
   display: block;
-  font-size: 20px;
-  font-weight: 900;
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1;
 }
 
 .rail p {
-  margin: 1px 0 0;
+  margin: 2px 0 0;
   font-size: 16px;
 }
 
@@ -222,32 +275,8 @@ button.secondary {
   color: var(--dim);
 }
 
-.rail .unlocked::after {
-  background: var(--yellow);
-}
-
 .rail .unlocked strong {
   color: var(--yellow);
   text-decoration: line-through;
   text-decoration-thickness: 2px;
-}
-
-.rail .marker::after {
-  background: var(--yellow);
-  width: 28px;
-  height: 28px;
-  left: -37px;
-  top: 0;
-}
-
-.rail .marker strong {
-  color: var(--yellow);
-  font-size: 22px;
-}
-
-.rail .marker p {
-  color: var(--pale);
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 12px;
 }

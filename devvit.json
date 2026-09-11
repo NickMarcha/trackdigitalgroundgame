@@ -4,7 +4,12 @@
   "post": {
     "entrypoints": {
       "default": {
-        "entry": "splash.html"
+        "entry": "splash.html",
+        "styles": {
+          "height": "tall",
+          "backgroundColor": "#1144FFFF",
+          "backgroundColorDark": "#1144FFFF"
+        }
       },
       "goals": {
         "entry": "goals.html"

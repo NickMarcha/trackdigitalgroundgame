@@ -1,4 +1,4 @@
 import {bindDonate, poll, render} from './tracker.ts'
 
 bindDonate()
-poll(rsp => render(rsp, Infinity, Infinity))
+poll(rsp => render(rsp, false))
