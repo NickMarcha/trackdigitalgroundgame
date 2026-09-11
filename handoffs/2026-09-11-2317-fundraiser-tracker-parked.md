@@ -12,7 +12,7 @@ Read `readme.md` first. It has the architecture, the data flow, the settings mod
 
 ## What is deployed where
 
-- App slug `trackdgroundgame`, owned by the user's Reddit developer account. Playtest versions only (v0.0.1.x); nothing has been `devvit upload`ed or published as a real version.
+- App slug `trackdgroundgame`, owned by the original author's Reddit developer account. Playtest versions only (v0.0.1.x); nothing has been `devvit upload`ed or published as a real version.
 - Installed on the private test subreddit r/trackdgroundgame_dev with one post. Playtest URL: https://www.reddit.com/r/trackdgroundgame_dev/?playtest=trackdgroundgame
 - A Windows scheduled task `trackdgroundgame sync` runs `node sync.mjs` every 5 minutes on the original author's machine and appends to `sync.log` (gitignored). It pushes ActBlue data into the app's `goalTracker` global setting. This is the only reason the post shows real numbers, and it only runs while that machine is on.
 - The `secure.actblue.com` fetch domain request was filed with Reddit on the first playtest. As of writing it had not been confirmed as approved; the server still logged `PERMISSION_DENIED ... secure.actblue.com is not allowed` in the last playtest run I saw. Check https://developers.reddit.com/apps/trackdgroundgame/developer-settings. If approved, the server fetches directly and the scheduled task can be deleted.
@@ -32,7 +32,7 @@ Read `readme.md` first. It has the architecture, the data flow, the settings mod
 
 1. **Wait for the DGG ping** (Blair, Discord link in readme Status section). Do not build speculative features before knowing what "future things" means.
 2. **ActBlue domain approval.** Check the developer settings page. If approved: restart `npm run dev`, confirm the PERMISSION_DENIED lines are gone, delete the scheduled task (`schtasks /delete /tn "trackdgroundgame sync" /f`).
-3. **Terms and Privacy Policy links** must be saved in the app details form on developers.reddit.com before the app can be published for a subreddit the user does not moderate. Not done.
+3. **Terms and Privacy Policy links** must be saved in the app details form on developers.reddit.com before the app can be published for a subreddit the app owner does not moderate. Not done.
 4. **Production install** has never been exercised. The path is `npm run build`, `npx devvit upload`, `npx devvit install r/<sub>`. Whoever runs it must moderate the target subreddit. The readme explains the alternatives.
 5. **Likely first change when they return**: make the fundraiser slug (and possibly reward text) a subreddit setting so mods can retarget without a redeploy. Discussed, not built. The readme's Settings section explains the two setting scopes.
 
