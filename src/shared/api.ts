@@ -4,8 +4,8 @@ export type ErrorRsp = {error: string; status: number}
 /** One fundraiser goal. Amounts are whole dollars. */
 export type Goal = {amount: number; rewards: string[]}
 
-/** Live fundraiser state. */
-export type GoalsRsp = {raised: number; goals: Goal[]}
+/** Live fundraiser state. `updatedAt` is when the total was read (epoch ms). */
+export type GoalsRsp = {raised: number; goals: Goal[]; updatedAt: number}
 
 export type Endpoint = (typeof Endpoint)[keyof typeof Endpoint]
 export const Endpoint = {

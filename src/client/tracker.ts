@@ -51,12 +51,22 @@ function renderSummary(rsp: GoalsRsp): void {
   const raised = document.getElementById('raised') as HTMLElement
   const fill = document.getElementById('fill') as HTMLElement
   const next = document.getElementById('next') as HTMLElement
+  const updated = document.getElementById('updated') as HTMLElement
   raised.textContent = money(rsp.raised)
   fill.style.width = `${Math.min(100, progress(rsp) * 100)}%`
   const goal = split(rsp).locked[0]
   next.textContent = goal
     ? `${short(goal.amount - rsp.raised)} to next goal`
     : 'Every goal unlocked'
+  updated.textContent = `updated ${ago(rsp.updatedAt)}`
+}
+
+/** "just now", "3 min ago", "2 hr ago" */
+export function ago(epochMs: number): string {
+  const min = Math.floor((Date.now() - epochMs) / 60_000)
+  if (min < 1) return 'just now'
+  if (min < 60) return `${min} min ago`
+  return `${Math.floor(min / 60)} hr ago`
 }
 
 /** Highest amount first. The segment below each node shows progress. */

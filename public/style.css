@@ -143,6 +143,14 @@ body.error .error-note {
   line-height: 1;
 }
 
+.summary .updated {
+  margin: 4px 0 0;
+  font-family: var(--terminal);
+  font-size: 16px;
+  line-height: 1;
+  color: var(--pale);
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -211,9 +219,10 @@ button.secondary {
     padding-bottom: 6px;
   }
 
-  /* No room for the top goal on phones; the expanded view has it. */
+  /* No room for these on phones; the expanded view has the goals. */
   .rail li.top,
-  .rail li.between {
+  .rail li.between,
+  .summary .updated {
     display: none;
   }
 
@@ -299,14 +308,13 @@ button.secondary {
   );
 }
 
-/* Small hollow square for the hidden-goals row. */
+/* Short bar for the hidden-goals row. */
 .rail li.between::after {
-  width: 10px;
-  height: 10px;
-  top: 3px;
+  width: 14px;
+  height: 8px;
+  top: 4px;
   border-radius: 0;
-  background: var(--bg);
-  border: 3px solid var(--node);
+  background: var(--node);
 }
 
 .rail li::after {

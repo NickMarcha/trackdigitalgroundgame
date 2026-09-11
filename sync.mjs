@@ -5,7 +5,7 @@ import {trackerUrl} from './src/shared/fundraiser.ts'
 
 const rsp = await fetch(trackerUrl, {headers: {Accept: 'application/json'}})
 if (!rsp.ok) throw Error(`ActBlue HTTP ${rsp.status}`)
-const json = await rsp.text()
+const json = JSON.stringify({...(await rsp.json()), fetchedAt: Date.now()})
 
 // `devvit settings set` prompts for the value on stdin.
 const cli = spawn('npx', ['devvit', 'settings', 'set', 'goalTracker'], {
