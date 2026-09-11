@@ -13,6 +13,8 @@ Both poll `/api/goals` every 60 seconds.
 
 Reddit apps are installed by a moderator of the subreddit, from the moderator's own developer account. Running it under your own account keeps everything in your hands; there is no need to give anyone outside your mod team access.
 
+The app cannot call ActBlue directly until Reddit approves that for your copy of the app, which takes longer than a fundraiser weekend. So the numbers come from a small script, `sync.mjs`, that you run on a schedule on any computer. It reads ActBlue and pushes the total, goals, and countdown into the app. Set that up as part of the steps below.
+
 ### Run it under your own account
 
 1. Go to https://developers.reddit.com and sign in with the Reddit account that moderates your subreddit. Accept the developer terms.
@@ -23,36 +25,36 @@ Reddit apps are installed by a moderator of the subreddit, from the moderator's 
    npx devvit login
    ```
 4. Open `devvit.json` and change `"name"` to a new app name (lowercase, letters and dashes, must be unique on Reddit).
-5. Run `npm run dev`. The first run creates the app under your account, creates a private test subreddit, and files the request for the `secure.actblue.com` fetch domain with Reddit. Check its status at `https://developers.reddit.com/apps/<your-app-name>/developer-settings`. Approval has taken under a day for this app, but Reddit quotes 1-2 business days.
-6. Until the domain is approved the post shows "Could not load the total". To fill it in the meantime, run `node sync.mjs` whenever you want the number refreshed, or set up the scheduled task below.
-7. When you are happy with it, stop `npm run dev` and install it for real:
+5. Run `npm run dev` once. It creates the app under your account and a private test subreddit so you can look at it. Stop it with Ctrl+C when you have seen it.
+6. Push the numbers in for the first time:
+   ```
+   node sync.mjs
+   ```
+   Then keep them fresh with a scheduled task. On Windows this runs the script every 5 minutes (edit the path to where you cloned the repo):
+   ```
+   schtasks /create /tn "trackdgroundgame sync" /sc minute /mo 5 /tr "cmd /c cd /d C:\path\to\trackdigitalgroundgame && node sync.mjs >> sync.log 2>&1"
+   ```
+   On Mac or Linux use cron: `*/5 * * * * cd /path/to/trackdigitalgroundgame && node sync.mjs >> sync.log 2>&1`. The computer has to be on and logged in for it to run. Remove the Windows task afterwards with `schtasks /delete /tn "trackdgroundgame sync" /f`.
+7. Install it on your subreddit:
    ```
    npm run build
    npx devvit upload
    npx devvit install r/<your-subreddit>
    ```
 
-Installing creates a tracker post automatically. Every mod also gets a "Create fundraiser tracker post" entry in the subreddit menu to make more.
+Installing creates a tracker post automatically. Every mod also gets a "Create fundraiser tracker post" entry in the subreddit menu to make more. The post shows "updated N min ago" so you can tell the sync is running.
 
 Like every Reddit app, the installed app gets an app account on your subreddit; Reddit currently grants those full mod permissions. This app only uses it to submit the tracker post. The code is all in this repo if you want to check.
 
+The first `npm run dev` also files a request with Reddit to let the app fetch ActBlue itself. If that gets approved (check `https://developers.reddit.com/apps/<your-app-name>/developer-settings`), the app switches over on its own and the scheduled task can be removed.
+
 ### Or have the app owner install the existing app
 
-If you would rather not set up a developer account, the owner of the already-approved app can install it, but only if they moderate your subreddit. Add them with just the **Manage Settings** permission (that is the one that covers installing apps), they run `npx devvit install r/<your-subreddit>`, and you remove them as a moderator afterwards. The app and its post stay installed.
-
-### Keeping the total fresh while the fetch is not approved
-
-`node sync.mjs` copies the current ActBlue numbers into the app. On Windows this runs it every 5 minutes (edit the path to where you cloned the repo):
-
-```
-schtasks /create /tn "trackdgroundgame sync" /sc minute /mo 5 /tr "cmd /c cd /d C:\path\to\trackdigitalgroundgame && node sync.mjs >> sync.log 2>&1"
-```
-
-Remove it with `schtasks /delete /tn "trackdgroundgame sync" /f`. On Mac or Linux use cron: `*/5 * * * * cd /path/to/trackdigitalgroundgame && node sync.mjs >> sync.log 2>&1`. Once the domain is approved the app fetches ActBlue itself and this is no longer needed.
+If you would rather not set up a developer account, the owner of the existing app can install it, but only if they moderate your subreddit. Add them with just the **Manage Settings** permission (that is the one that covers installing apps), they run `npx devvit install r/<your-subreddit>`, and you remove them as a moderator afterwards. The app and its post stay installed. The sync script then runs on their machine instead of yours.
 
 ### Changing the goal text
 
-The reward for each goal is in `src/shared/fundraiser.ts`, keyed by the goal amount in dollars. Edit it, then upload and install again (step 7 above), or if `npm run dev` is running it updates the test subreddit on save.
+The reward for each goal is in `src/shared/fundraiser.ts`, keyed by the goal amount in dollars. Edit it, then upload and install again (step 7 above).
 
 ## How data flows
 
@@ -62,7 +64,7 @@ Reddit post (iframe)  --/api/goals-->  Reddit-hosted Node server  --fetch-->  se
                                                                        donate page HTML (countdown end time)
 ```
 
-The server tries ActBlue directly. If Reddit has not approved the `secure.actblue.com` fetch domain for this app yet, the fetch is denied and the server falls back to the `goalTracker` app setting, which `sync.mjs` fills from this machine (see below). Either way one fetch per minute serves every viewer.
+The server tries ActBlue directly. Until Reddit approves the `secure.actblue.com` fetch domain for the app, the fetch is denied and the server reads the `goalTracker` app setting instead, which `sync.mjs` fills on a schedule. Either way one read per minute serves every viewer.
 
 Reward text per goal is not in the ActBlue API. It lives in `src/shared/fundraiser.ts` and is keyed by goal amount in dollars. If a goal is added on ActBlue it shows up with no text until a line is added there.
 
@@ -100,9 +102,9 @@ Devvit has two kinds of settings; this app currently uses only the first.
 
 **Subreddit settings** (`settings.subreddit`) would be editable by moderators in Reddit's UI: open the subreddit, then Mod Tools, then Apps (or go to `reddit.com/r/<subreddit>/apps/trackdgroundgame`), and each installed app has a settings form there. Changes apply on the next request with no upload. None are defined yet; adding one is a `devvit.json` entry plus a `settings.get('<key>')` call on the server.
 
-## Keeping the fallback fresh
+## Keeping the total fresh
 
-While the fetch domain is unapproved, a Windows scheduled task on the dev machine runs `node sync.mjs` every 5 minutes and logs to `sync.log`. It was created with:
+A Windows scheduled task on the dev machine runs `node sync.mjs` every 5 minutes and logs to `sync.log`. It was created with:
 
 ```
 schtasks /create /tn "trackdgroundgame sync" /sc minute /mo 5 /tr "cmd /c cd /d C:\Users\Nicol\Desktop\trackdigitalgroundgame && node sync.mjs >> sync.log 2>&1"
