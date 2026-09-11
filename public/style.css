@@ -245,6 +245,8 @@ button.secondary {
  * spread the nodes over the available height.
  */
 .rail {
+  /* Horizontal center of the line and nodes, relative to each item. */
+  --axis: -20px;
   list-style: none;
   margin: 0;
   padding: 0 0 0 36px;
@@ -270,10 +272,11 @@ button.secondary {
 .rail li:not(:last-child)::before {
   content: '';
   position: absolute;
-  left: -23px;
+  left: var(--axis);
   top: 14px;
   bottom: -14px;
   width: 6px;
+  transform: translateX(-50%);
   background: linear-gradient(
     to top,
     var(--yellow) var(--fill),
@@ -296,12 +299,12 @@ button.secondary {
   );
 }
 
-/* Small hollow node for the hidden-goals row, centered on the line. */
+/* Small hollow square for the hidden-goals row. */
 .rail li.between::after {
   width: 10px;
   height: 10px;
-  left: -28px;
   top: 3px;
+  border-radius: 0;
   background: var(--bg);
   border: 3px solid var(--node);
 }
@@ -309,13 +312,14 @@ button.secondary {
 .rail li::after {
   content: '';
   position: absolute;
-  left: -34px;
+  left: var(--axis);
   top: 2px;
   width: 22px;
   height: 22px;
   border-radius: 50%;
   background: var(--node);
   border: 3px solid var(--bg);
+  transform: translateX(-50%);
 }
 
 .rail li.next::after {
