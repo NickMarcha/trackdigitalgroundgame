@@ -14,9 +14,17 @@
         <h1>Election <em>Fundraiser</em></h1>
       </header>
       <p class="error-note">Could not load the total. Try again in a minute.</p>
-      <ol class="rail" id="rail"></ol>
-      <div class="actions">
-        <button type="button" data-donate>Donate on ActBlue</button>
+      <div class="layout">
+        <ol class="rail" id="rail"></ol>
+        <section class="summary">
+          <strong id="raised"></strong>
+          <p class="label">raised so far</p>
+          <div class="bar"><div class="fill" id="fill"></div></div>
+          <p class="next" id="next"></p>
+          <div class="actions">
+            <button type="button" data-donate>Donate on ActBlue</button>
+          </div>
+        </section>
       </div>
     </main>
     <script src="goals.js" type="module"></script>

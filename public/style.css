@@ -20,6 +20,7 @@
   --pale: #ced9ff;
   --node: #afbfff;
   --dim: rgba(255, 255, 255, 0.55);
+  --pad: 20px;
 }
 
 * {
@@ -28,7 +29,6 @@
 
 body {
   margin: 0;
-  min-height: 100dvh;
   background: var(--bg);
   color: #fff;
   font-family: 'Roboto Condensed', 'Arial Narrow', sans-serif;
@@ -38,25 +38,29 @@ body {
 }
 
 main {
-  padding: 16px 20px;
-  max-width: 560px;
+  min-height: 100dvh;
+  padding: var(--pad);
+  max-width: 800px;
   margin: 0 auto;
+  display: grid;
+  align-content: center;
+  gap: var(--pad);
 }
 
 header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .logo {
-  height: 40px;
+  height: 52px;
   width: auto;
 }
 
 h1 {
   margin: 0;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
@@ -70,7 +74,7 @@ h1 em {
 
 .error-note {
   display: none;
-  margin: 12px 0 0;
+  margin: 0;
   color: var(--pale);
 }
 
@@ -78,10 +82,71 @@ body.error .error-note {
   display: block;
 }
 
+/* Summary above the rail on phones, beside it when there is room. */
+.layout {
+  display: grid;
+  gap: var(--pad);
+}
+
+.summary {
+  order: -1;
+}
+
+@media (min-width: 540px) {
+  .layout {
+    grid-template-columns: 1fr 230px;
+    align-items: start;
+  }
+
+  .summary {
+    order: 0;
+    position: sticky;
+    top: var(--pad);
+  }
+}
+
+.summary strong {
+  display: block;
+  font-size: 44px;
+  font-weight: 900;
+  color: var(--yellow);
+  line-height: 1;
+}
+
+.summary .label {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--pale);
+}
+
+.bar {
+  height: 10px;
+  margin: 12px 0 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: var(--yellow);
+  border-radius: 5px;
+  transition: width 400ms ease;
+}
+
+.summary .next {
+  margin: 6px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  margin-top: 4px;
+  margin-top: 16px;
 }
 
 button {
@@ -106,7 +171,7 @@ button.secondary {
 /* Vertical goal rail, highest amount at the top like the poster. */
 .rail {
   list-style: none;
-  margin: 16px 0 0;
+  margin: 0;
   padding: 0 0 0 36px;
 }
 
@@ -115,8 +180,12 @@ button.secondary {
   padding: 0 0 16px;
 }
 
-/* Rail segment from this node down to the next one. */
-.rail li:not(:last-child)::after {
+.rail li:last-child {
+  padding-bottom: 0;
+}
+
+/* Rail segment from this node down to the next one, behind the nodes. */
+.rail li:not(:last-child)::before {
   content: '';
   position: absolute;
   left: -26px;
@@ -126,7 +195,7 @@ button.secondary {
   background: var(--node);
 }
 
-.rail li::before {
+.rail li::after {
   content: '';
   position: absolute;
   left: -34px;
@@ -153,7 +222,7 @@ button.secondary {
   color: var(--dim);
 }
 
-.rail .unlocked::before {
+.rail .unlocked::after {
   background: var(--yellow);
 }
 
@@ -163,51 +232,22 @@ button.secondary {
   text-decoration-thickness: 2px;
 }
 
-.rail .marker {
-  padding-top: 4px;
-  padding-bottom: 20px;
-}
-
-.rail .marker::before {
+.rail .marker::after {
   background: var(--yellow);
   width: 28px;
   height: 28px;
   left: -37px;
-  top: 4px;
+  top: 0;
 }
 
 .rail .marker strong {
-  font-size: 36px;
   color: var(--yellow);
-  line-height: 1;
+  font-size: 22px;
 }
 
 .rail .marker p {
   color: var(--pale);
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 13px;
-}
-
-.bar {
-  height: 10px;
-  margin: 8px 0 0;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.fill {
-  height: 100%;
-  background: var(--yellow);
-  border-radius: 5px;
-  transition: width 400ms ease;
-}
-
-.rail .marker .next {
-  margin-top: 4px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-  text-transform: none;
+  font-size: 12px;
 }

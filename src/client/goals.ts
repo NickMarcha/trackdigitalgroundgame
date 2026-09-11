@@ -1,4 +1,4 @@
-import {bindDonate, poll, renderRail} from './tracker.ts'
+import {bindDonate, poll, render} from './tracker.ts'
 
 bindDonate()
-poll(rsp => renderRail(rsp, Infinity, Infinity))
+poll(rsp => render(rsp, Infinity, Infinity))

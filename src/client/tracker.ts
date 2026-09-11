@@ -38,12 +38,33 @@ export function progress(rsp: GoalsRsp): number {
   return (rsp.raised - from) / (next.amount - from)
 }
 
+/** Fills the summary panel and the rail. Pass Infinity to show every goal. */
+export function render(
+  rsp: GoalsRsp,
+  lockedShown: number,
+  unlockedShown: number,
+): void {
+  renderSummary(rsp)
+  renderRail(rsp, lockedShown, unlockedShown)
+}
+
+function renderSummary(rsp: GoalsRsp): void {
+  const raised = document.getElementById('raised') as HTMLElement
+  const fill = document.getElementById('fill') as HTMLElement
+  const next = document.getElementById('next') as HTMLElement
+  raised.textContent = money(rsp.raised)
+  fill.style.width = `${Math.min(100, progress(rsp) * 100)}%`
+  const goal = split(rsp).locked[0]
+  next.textContent = goal
+    ? `${short(goal.amount - rsp.raised)} to go`
+    : 'Every goal unlocked'
+}
+
 /**
  * Fills #rail with the next `lockedShown` goals, a marker for the current
- * total, and the last `unlockedShown` goals, highest amount first. Pass
- * Infinity to show every goal.
+ * total, and the last `unlockedShown` goals, highest amount first.
  */
-export function renderRail(
+function renderRail(
   rsp: GoalsRsp,
   lockedShown: number,
   unlockedShown: number,
@@ -55,7 +76,7 @@ export function renderRail(
       .slice(0, lockedShown)
       .reverse()
       .map(g => goalItem(g, 'locked')),
-    marker(rsp),
+    marker(rsp.raised),
     ...unlocked
       .slice(-unlockedShown)
       .reverse()
@@ -77,30 +98,14 @@ function goalItem(goal: Goal, state: 'locked' | 'unlocked'): HTMLLIElement {
   return li
 }
 
-function marker(rsp: GoalsRsp): HTMLLIElement {
+function marker(raised: number): HTMLLIElement {
   const li = document.createElement('li')
   li.className = 'marker'
-
   const amount = document.createElement('strong')
-  amount.textContent = money(rsp.raised)
-  const label = document.createElement('p')
-  label.textContent = 'raised so far'
-
-  const bar = document.createElement('div')
-  bar.className = 'bar'
-  const fill = document.createElement('div')
-  fill.className = 'fill'
-  fill.style.width = `${Math.min(100, progress(rsp) * 100)}%`
-  bar.append(fill)
-
-  const next = document.createElement('p')
-  next.className = 'next'
-  const goal = split(rsp).locked[0]
-  next.textContent = goal
-    ? `${short(goal.amount - rsp.raised)} to go`
-    : 'Every goal unlocked'
-
-  li.append(amount, label, bar, next)
+  amount.textContent = short(raised)
+  const p = document.createElement('p')
+  p.textContent = 'raised so far'
+  li.append(amount, p)
   return li
 }
 
