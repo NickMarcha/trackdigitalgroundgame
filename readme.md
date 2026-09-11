@@ -9,6 +9,27 @@ Two views:
 
 Both poll `/api/goals` every 60 seconds.
 
+## Status
+
+Parked until roughly October 2026. Last word from Digital Ground Game (Blair, [Discord](https://discord.com/channels/1345532745463496717/1548057222481715261/1548068345197363271)):
+
+> I think we're gonna hold off on this one but expect a ping in like a month or so so we can use it for future things
+
+In the meantime the app is waiting on Reddit's approval to fetch ActBlue directly, which removes the need for the sync script below.
+
+**Preview:** the app account is [u/trackdgroundgame](https://www.reddit.com/user/trackdgroundgame/) and its post lives in the private test subreddit r/trackdgroundgame_dev. Ask to be added as an approved user of that subreddit to see it.
+
+## What Reddit needs to approve, and when
+
+Reddit approves fetches per app and per hostname, not per page. That means:
+
+- **Pointing at a different ActBlue fundraiser** needs no new approval. Change `page` in `src/shared/fundraiser.ts` (and the reward text), upload, done.
+- **A different service** (any other hostname) needs a new domain request in `devvit.json`. Same review, usually 1-2 business days. It has to be a publicly accessible data API; you do not have to own it.
+- **Your own backend** will not be approved. Reddit's policy rejects personal domains outright, so a self-hosted proxy is not an option. If a service Reddit will not allow is ever needed, the choices are the sync script (push data into an app setting from outside) or Reddit's External Endpoints feature (an outside service pushes into the app; limited access, request via a form).
+- Any app that uses fetch needs a Terms and Conditions link and a Privacy Policy link saved in its app details form on developers.reddit.com.
+- Approvals stick to the app slug across versions, so once granted they do not need renewing on each upload.
+
+
 ## For moderators: getting it into your subreddit
 
 Reddit apps are installed by a moderator of the subreddit, from the moderator's own developer account. Running it under your own account keeps everything in your hands; there is no need to give anyone outside your mod team access.
