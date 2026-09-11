@@ -82,6 +82,14 @@ header {
   width: auto;
 }
 
+.titles {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
 h1 {
   margin: 0;
   font-family: var(--display);
@@ -89,6 +97,16 @@ h1 {
   font-weight: 700;
   text-transform: uppercase;
   line-height: 1;
+}
+
+.timer {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--yellow);
+  white-space: nowrap;
 }
 
 h1 em {
@@ -198,8 +216,19 @@ button.secondary {
     height: 52px;
   }
 
+  /* Title on one line so the timer fits under it beside the logo. */
+  .titles {
+    flex-direction: column;
+    align-items: start;
+    gap: 4px;
+  }
+
   h1 {
-    font-size: 26px;
+    font-size: 22px;
+  }
+
+  .timer {
+    font-size: 16px;
   }
 
   .summary strong,

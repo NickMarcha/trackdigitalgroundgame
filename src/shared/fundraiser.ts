@@ -3,6 +3,11 @@ export const page = 'midterms-finish'
 export const donateUrl = `https://secure.actblue.com/donate/${page}`
 export const trackerUrl = `https://secure.actblue.com/pages/${page}/goal_tracker_data`
 export const title = 'Election Fundraiser'
+
+/** Countdown end time (ISO 8601) embedded in the donate page HTML. */
+export function parseEndsAt(html: string): string | undefined {
+  return /"timer_ends_at":"([^"]+)"/.exec(html)?.[1]
+}
 export const org = 'Digital Ground Game'
 
 /** What each goal unlocks, keyed by whole dollars. Not in the ActBlue API. */

@@ -59,6 +59,21 @@ function renderSummary(rsp: GoalsRsp): void {
     ? `${short(goal.amount - rsp.raised)} to next goal`
     : 'Every goal unlocked'
   updated.textContent = `updated ${ago(rsp.updatedAt)}`
+
+  const timer = document.getElementById('timer') as HTMLElement
+  timer.textContent = rsp.endsAt ? left(Date.parse(rsp.endsAt)) : ''
+}
+
+/** "2d 5h left", "14h 22m left", "8m left", "ended" */
+export function left(endMs: number): string {
+  const min = Math.floor((endMs - Date.now()) / 60_000)
+  if (min < 0) return 'ended'
+  const d = Math.floor(min / 1440)
+  const h = Math.floor((min % 1440) / 60)
+  const m = min % 60
+  if (d > 0) return `${d}d ${h}h left`
+  if (h > 0) return `${h}h ${m}m left`
+  return `${m}m left`
 }
 
 /** "just now", "3 min ago", "2 hr ago" */
