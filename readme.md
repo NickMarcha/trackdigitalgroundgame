@@ -1,16 +1,72 @@
 # Digital Ground Game fundraiser tracker
 
-Shows live progress for the [Digital Ground Game election fundraiser](https://secure.actblue.com/donate/midterms-finish) inside a Reddit post: total raised, the next stretch goals, and the ones already unlocked.
+A Reddit app (Devvit Web) that shows live progress for the [Digital Ground Game election fundraiser](https://secure.actblue.com/donate/midterms-finish) inside a post: total raised, time left, the next stretch goal, and the goals already unlocked.
+
+Two views:
+
+- **Compact** (`public/splash.html`): shown inline in the feed. Top goal, next goal, last three unlocked, total, progress bar, Donate button.
+- **All goals** (`public/goals.html`): opened from the compact view. Every goal on one rail.
+
+Both poll `/api/goals` every 60 seconds.
+
+## How data flows
+
+```
+Reddit post (iframe)  --/api/goals-->  Reddit-hosted Node server  --fetch-->  secure.actblue.com
+                                       (cache helper, 60s TTL)         goal_tracker_data (total, goal amounts)
+                                                                       donate page HTML (countdown end time)
+```
+
+The server tries ActBlue directly. If Reddit has not approved the `secure.actblue.com` fetch domain for this app yet, the fetch is denied and the server falls back to the `goalTracker` app setting, which `sync.mjs` fills from this machine (see below). Either way one fetch per minute serves every viewer.
+
+Reward text per goal is not in the ActBlue API. It lives in `src/shared/fundraiser.ts` and is keyed by goal amount in dollars. If a goal is added on ActBlue it shows up with no text until a line is added there.
+
+## Layout
+
+```
+devvit.json            app config: entrypoints, fetch domains, settings, menu
+src/client/            tracker.ts renders both views; splash.ts and goals.ts are the entry points
+src/server/            actblue.ts fetches and parses; server.ts routes /api/goals and the post-creation hooks
+src/shared/            types and fundraiser constants shared by client and server
+public/                HTML, CSS, fonts, logo. *.js files here are build output
+sync.mjs               copies ActBlue data into the goalTracker setting
+build.mjs              esbuild for client and server; --watch for dev
+```
+
+## Commands
+
+- `npm run dev`: builds, uploads, installs on the test subreddit, and rebuilds on save. First run creates the test subreddit and files the fetch domain request.
+- `npm test`: type check, lint, unit tests, build.
+- `npm run format`: fix lint and formatting.
+- `npm run publish`: clean build, upload, and file an app review request (needed before installing on a subreddit you do not moderate).
+- `node sync.mjs`: push the current ActBlue data into the `goalTracker` setting once.
+
+## Creating a post
+
+In a subreddit where the app is installed, moderators get a "Create fundraiser tracker post" entry in the subreddit menu. Installing the app also creates one post automatically.
+
+## Settings
+
+Devvit has two kinds of settings; this app currently uses only the first.
+
+**Global settings** (`settings.global` in `devvit.json`) are set by the developer from the terminal and shared by every installation. They do not appear in Reddit's UI.
+
+- `goalTracker`: a copy of the ActBlue JSON plus `endsAt` and `fetchedAt`. Set it with `node sync.mjs`, or by hand with `npx devvit settings set goalTracker` (it prompts for the value). The app must have been uploaded at least once (`npm run dev`) before the setting exists.
+
+**Subreddit settings** (`settings.subreddit`) would be editable by moderators in Reddit's UI: open the subreddit, then Mod Tools, then Apps (or go to `reddit.com/r/<subreddit>/apps/trackdgroundgame`), and each installed app has a settings form there. Changes apply on the next request with no upload. None are defined yet; adding one is a `devvit.json` entry plus a `settings.get('<key>')` call on the server.
+
+## Keeping the fallback fresh
+
+While the fetch domain is unapproved, a Windows scheduled task on the dev machine runs `node sync.mjs` every 5 minutes and logs to `sync.log`. It was created with:
+
+```
+schtasks /create /tn "trackdgroundgame sync" /sc minute /mo 5 /tr "cmd /c cd /d C:\Users\Nicol\Desktop\trackdigitalgroundgame && node sync.mjs >> sync.log 2>&1"
+```
+
+Remove it with `schtasks /delete /tn "trackdgroundgame sync" /f`. Once Reddit approves the domain the server fetches ActBlue itself and the task can go.
 
 ## Fetch Domains
 
 The following domains are requested for this app:
 
-- `secure.actblue.com` - Reads the public goal tracker JSON for the fundraiser page (`/pages/midterms-finish/goal_tracker_data`) to show total raised and stretch goal progress. Read only, no user data is sent.
-
-## Commands
-
-- `npm run dev`: watches changes, builds, uploads, and installs on your test subreddit.
-- `npm run build`: builds client and server.
-- `npm run test`: type check, lint, unit tests, build.
-- `npm run publish`: cleans, builds, uploads, and files an app review request.
+- `secure.actblue.com` - Reads the public goal tracker JSON (`/pages/midterms-finish/goal_tracker_data`) for the total and goal amounts, and the public donate page for the countdown end time. Read only, no user data is sent.
